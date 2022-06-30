@@ -13,15 +13,31 @@ export default class NotesList extends Component {
   }
 
   getNotes = async () => {
-    const res = await axios.get("http://localhost:4000/api/notes");
-    this.setState({ notes: res.data });
+    let res = {};
+    try {
+      res = await axios.get("http://localhost:4000/api/notes");
+    } catch (error) {
+      res.status = error.response.status;
+      res.response = error.response.status + " --- " + error.code + " --- " + error.response.statusText
+      console.log(error);
+    };
+    if (res.status === 200) {
+      this.setState({ notes: res.data });
+    } else console.log("Se presento un error con el servicio de notas " + res.response);
   }
 
   deleteNote = async (id) => {
-    const res = await axios.delete("http://localhost:4000/api/notes/" + id)
+    let res = {};
+    try {
+      res = await axios.delete("http://localhost:4000/api/notes/" + id)
+    } catch (error) {
+      res.status = error.response.status;
+      res.response = error.response.status + " --- " + error.code + " --- " + error.response.statusText
+      console.log(error);
+    };
     if (res.status === 200) {
       this.getNotes();
-    }
+    } else console.log("Se presento un error con el servicio de notas " + res.response);
   }
 
   render() {
